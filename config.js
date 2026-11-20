@@ -1,7 +1,7 @@
 // Configuración PÚBLICA del sitio. No pongas contraseñas, tokens ni claves aquí.
 window.VESTRA_CONFIG = {
   // Versión que estás anunciando en la web.
-  currentVersion: "5.0.1",
+  currentVersion: "6.0",
 
   // OPCIÓN RECOMENDADA: repositorio público que contiene los APK en GitHub Releases.
   // Ejemplo: "tuusuario/vestra-releases".
