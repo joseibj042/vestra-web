@@ -2,7 +2,7 @@
 (() => {
   const cfg = window.VESTRA_CONFIG || {};
   const $ = (id) => document.getElementById(id);
-  const announcedVersion = String(cfg.currentVersion || "5.0.1").replace(/^[vV]/, "");
+  const announcedVersion = String(cfg.currentVersion || "6.0").replace(/^[vV]/, "");
   document.querySelectorAll("[data-announced-version]").forEach((el) => { el.textContent = announcedVersion; });
   $("download-version").textContent = announcedVersion;
   $("year").textContent = String(new Date().getFullYear());
@@ -46,8 +46,9 @@
   };
   const isRepo = (value) => /^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/.test(value);
   const versionParts = (tag) => {
-    const match = String(tag || "").match(/^v?(\d+)\.(\d+)\.(\d+)(?:\b|[-+])/i);
-    return match ? match.slice(1).map(Number) : null;
+    // Acepta etiquetas GitHub "v6.0", "6.0", "v6.0.0" y "v6.0.1".
+    const match = String(tag || "").trim().match(/^v?(\d+)\.(\d+)(?:\.(\d+))?(?:$|[-+])/i);
+    return match ? [Number(match[1]), Number(match[2]), Number(match[3] || 0)] : null;
   };
   const compareVersions = (a, b) => {
     const x = versionParts(a), y = versionParts(b);
@@ -148,15 +149,18 @@
       if (!Array.isArray(data)) throw new Error("Formato de respuesta inesperado");
       const releases = data.filter((r) => r && !r.draft && !r.prerelease).sort((a, b) => new Date(b.published_at || 0) - new Date(a.published_at || 0));
       appendHistory(releases);
-      const downloadable = releases.find((r) => (r.assets || []).some((a) => /\.apk$/i.test(a.name || "") && isHttps(a.browser_download_url)));
-      if (downloadable) {
-        const isCurrentOrNewer = compareVersions(downloadable.tag_name, announcedVersion);
-        if (isCurrentOrNewer !== null && isCurrentOrNewer >= 0) {
-          const asset = downloadable.assets.find((a) => /\.apk$/i.test(a.name || "") && isHttps(a.browser_download_url));
-          enableDownload(asset.browser_download_url, downloadable.tag_name, asset.name);
-        } else if (!isHttps(directUrl)) {
-          $("download-message").textContent = `La actualización ${announcedVersion} aún no tiene un APK publicado en este repositorio.`;
-        }
+      // Descarga solo versiones iguales o posteriores a la anunciada; no ofrecer un APK anterior.
+      const candidates = releases.filter((r) =>
+        compareVersions(r.tag_name, announcedVersion) !== null &&
+        compareVersions(r.tag_name, announcedVersion) >= 0 &&
+        (r.assets || []).some((a) => /\.apk$/i.test(a.name || "") && isHttps(a.browser_download_url))
+      ).sort((a, b) => compareVersions(b.tag_name, a.tag_name) || new Date(b.published_at || 0) - new Date(a.published_at || 0));
+      if (!isHttps(directUrl) && candidates.length) {
+        const release = candidates[0];
+        const asset = release.assets.find((a) => /\.apk$/i.test(a.name || "") && isHttps(a.browser_download_url));
+        enableDownload(asset.browser_download_url, release.tag_name, asset.name);
+      } else if (!isHttps(directUrl)) {
+        $("download-message").textContent = `La versión ${announcedVersion} aún no tiene un APK publicado en este repositorio.`;
       }
     } catch (e) {
       if (!isHttps(directUrl)) {

@@ -1,81 +1,92 @@
-# VESTRA — Web oficial, edición 5.0.1
+# VESTRA 6.0 — Página web oficial
 
-Una web estática (HTML/CSS/JavaScript) de VESTRA que integra tres nuevas imágenes promocionales aportadas. Compatible con PC y Android, sin compilación, sin backend ni suscripción obligatoria.
+Web estática para publicar VESTRA en Android. Se abre con Visual Studio Code + Live Server y puede publicarse gratis mediante GitHub Pages, dentro de los límites de GitHub. No necesitas Node.js, base de datos ni pagar por un hosting. **El APK no está incluido**: debes subirlo a GitHub Releases y conectar el repositorio.
 
-## Novedades incluidas en el sitio
+## Novedades de VESTRA 6.0 anunciadas en la página
 
-- La **versión actual anunciada** es **5.0.1**.
-- **Luces LED** incorporadas.
-- **Mejoras en las mascotas**.
-- **Azotea habilitada**.
-- Nueva imagen promocional principal en la portada, enlazada a la sección de descarga.
-- Dos piezas adicionales en una galería editorial que permite ampliarlas.
-- Cada una de las tres nuevas imágenes aparece una sola vez en la página; se muestran completas y sin recortes.
-- Las imágenes están optimizadas en WebP para acelerar la carga en dispositivos móviles.
-- La galería opcional de **capturas reales** sigue siendo independiente de los artes promocionales.
-- Se retiraron textos y secciones promocionales redundantes.
-- Descargas desde GitHub Releases (recomendado) o un enlace directo HTTPS.
-- Historial de versiones anteriores solo si existen publicaciones en GitHub.
+1. Plato de agua para las mascotas.
+2. Nuevas prendas.
+3. Corrección de errores.
+4. Interruptores en las demás plantas.
+5. Nuevas figuras.
+6. Nuevos pósteres.
+7. Nuevas luces LED RGB.
+8. Nueva ventana de novedades.
+9. Nuevo árbol de habilidades.
+
+La sección da mayor protagonismo al árbol de habilidades, las luces RGB y el plato de agua; agrupa los seis cambios restantes sin repetir contenido. Mantiene las tres imágenes de campaña y distingue el collage que contiene el número **5.0.1** como **campaña anterior**, para que nadie lo confunda con la versión actual. Son imágenes promocionales y no capturas reales del juego.
 
 ## Probar en Visual Studio Code
 
-1. Descomprime el ZIP.
-2. Abre la carpeta en **Visual Studio Code**.
-3. Instala **Live Server** (Ritwick Dey), abre `index.html` y selecciona **Open with Live Server**.
-4. Alternativamente, desde la carpeta ejecuta `python -m http.server 8000` y visita `http://localhost:8000/`.
+1. Extrae este ZIP.
+2. Abre la carpeta `VESTRA_Web_6.0` en **Visual Studio Code**.
+3. Abre `index.html` con **Live Server** (extensión de Ritwick Dey).
+4. Alternativamente ejecuta `python -m http.server 8000` dentro de esta carpeta y visita `http://localhost:8000/`.
 
-## Activar la descarga de la versión 5.0.1
+## Conectar la descarga del APK VESTRA 6.0
 
-La web no incluye un APK. Por seguridad, la descarga aparece deshabilitada hasta añadir un enlace real.
-
-**Opción A — GitHub Releases (recomendado):**
-1. Crea un repositorio público de GitHub, por ejemplo `TU_USUARIO/vestra-releases`.
-2. En **Releases → Draft a new release**, crea la etiqueta **`v5.0.1`**.
-3. Adjunta el archivo `.apk` de la versión 5.0.1 y publica la release (no draft ni prerelease).
-4. En `config.js` escribe `githubRepo: "TU_USUARIO/vestra-releases"`.
-5. Guarda y recarga la web. La descarga se activa al detectar la versión 5.0.1 (o posterior) con APK.
-
-**Opción B — URL directa:**
-1. Sube el APK a un servicio que proporcione un enlace **HTTPS directo** al archivo.
-2. En `config.js` rellena `directApkUrl: "https://.../VESTRA-5.0.1.apk"`.
-3. El botón de descarga se activará sin consultar GitHub.
-
-**Nota:** la página jamás permite descargar un APK de una versión *anterior* a la anunciada como si fuera 5.0.1. Las versiones previas, si están disponibles, aparecen aparte. Para el mismo juego en Android, conserva el mismo package name, firma y aumenta `versionCode`.
-
-## Añadir capturas reales
-
-Guarda tus capturas en `assets/` e incluye las rutas en `config.js`:
+En `config.js`, coloca el nombre real de tu repositorio de APK:
 
 ```js
-screenshots: ["assets/imagen1.webp", "assets/imagen2.webp"]
+window.VESTRA_CONFIG = {
+  currentVersion: "6.0",
+  githubRepo: "TU_USUARIO/vestra-releases",
+  directApkUrl: "",
+  screenshots: []
+};
 ```
 
-Sin capturas no se muestra ningún módulo vacío de galería ni se reutiliza la imagen promocional como falsa captura de gameplay.
+Después:
 
-## Publicar gratis con GitHub Pages
+1. En GitHub abre el repositorio **público** `vestra-releases`.
+2. Ve a **Releases → Draft a new release**.
+3. Crea un tag **`v6.0`** (también se acepta `v6.0.0`).
+4. Adjunta el archivo del juego (por ejemplo, `VESTRA-6.0.apk`) en la sección de archivos adjuntos.
+5. Pulsa **Publish release**. No la marques como borrador ni como *pre-release*.
+6. Vuelve a la página. El botón de descarga se activará cuando GitHub devuelva una release pública igual o posterior a la **6.0** con un archivo `.apk`.
 
-1. Crea un repositorio público, por ejemplo `vestra-web`.
-2. Sube el contenido de esta carpeta (`index.html`, `styles.css`, `config.js`, `script.js`, `assets/`, `.nojekyll`).
-3. En **Settings → Pages**, elige **Deploy from a branch**, rama `main`, carpeta `/ (root)`.
-4. El sitio quedará en una dirección del tipo `https://TU_USUARIO.github.io/vestra-web/` cuando GitHub complete la publicación.
+El sitio también puede usar `directApkUrl` con un enlace HTTPS **directo** al APK, si no deseas usar GitHub Releases. En ese caso el enlace directo tiene prioridad sobre las releases del repositorio.
 
-El servicio es gratuito dentro de sus condiciones y límites; GitHub Releases no es un CDN ilimitado. No guardes claves ni tokens privados en `config.js`. Esta web no detecta la versión instalada en el celular ni instala APK automáticamente: Android siempre requiere las autorizaciones correspondientes.
+**Importante:** si todavía tienes publicada únicamente la versión 5.0.1, la página **no la presentará como si fuera la 6.0**. El botón de descarga permanecerá inactivo hasta subir la 6.0 o configurar un enlace directo.
 
-## Estructura
+## Subir la página a GitHub Pages
 
-- `index.html`: contenido de la página.
-- `styles.css`: estilos y adaptación móvil.
-- `config.js`: versión, enlaces y capturas.
-- `script.js`: navegación, comprobación de releases y descargas.
-- `assets/vestra-campana-principal.webp`: portada promocional (imagen 1).
-- `assets/vestra-campana-moda.webp`: collage promocional (imagen 2).
-- `assets/vestra-campana-azul.webp`: promoción azul (imagen 3).
-- `assets/icono-vestra.png`: icono personalizado a partir de la imagen aportada.
+1. Crea o abre tu repositorio público de la web, por ejemplo `vestra-web`.
+2. Para sustituir la web anterior, **sube el contenido de esta carpeta** en la raíz del repositorio (no la carpeta contenedora y no el ZIP): `index.html`, `styles.css`, `config.js`, `script.js`, `.nojekyll` y la carpeta `assets/`.
+3. En GitHub: **Settings → Pages → Deploy from a branch → main → / (root) → Save**.
+4. Visita `https://TU_USUARIO.github.io/vestra-web/` cuando se publique.
 
-## Ver las tres imágenes
+### Si GitHub no te deja subir la carpeta `assets`
 
-- **Imagen 1**: se muestra completa en la portada. Si la pulsas, te desplaza a la sección de descarga; los botones dibujados dentro de la imagen no son controles reales.
-- **Imagen 2**: aparece en la galería, con opción de ampliación.
-- **Imagen 3**: aparece junto a la imagen 2, con opción de ampliación.
+Utiliza **GitHub Desktop**, que mantiene la estructura de carpetas:
 
-Los textos y botones ilustrados dentro de las imágenes promocionales son parte del arte original. El **botón real** de descarga es el que se activa en la sección «Descargar» al configurar el APK.
+1. En GitHub Desktop, selecciona **File → Clone repository** y elige `vestra-web`.
+2. Abre desde el Explorador de Windows la carpeta local del repositorio que clonaste.
+3. Copia **todos los archivos y la carpeta `assets`** de `VESTRA_Web_6.0` dentro de la carpeta del repositorio. Acepta reemplazar los archivos de la versión anterior.
+4. En GitHub Desktop, escribe el resumen `Actualizar web VESTRA a 6.0`.
+5. Haz clic en **Commit to main** y después **Push origin**.
+
+### Para publicar las siguientes versiones
+
+Sube otro APK a una release nueva de GitHub (por ejemplo `v6.0.1`). El enlace del botón podrá detectar esa versión automáticamente. **Los textos y la sección de novedades de portada no se reescriben solos**: al lanzar una nueva versión, tendrás que actualizar el contenido de `index.html` y `currentVersion` de `config.js`.
+
+## Precauciones
+
+- Mantén el mismo **package name** y firma del APK para las actualizaciones de Android y aumenta el **versionCode** en Unity.
+- Android puede pedir permiso de instalación de APK y confirmación del usuario. Esta web no instala APK silenciosamente.
+- No coloques tokens, contraseñas ni secretos en `config.js`.
+- GitHub Pages y GitHub Releases están sujetos a límites y condiciones de uso, especialmente si el volumen de descargas crece mucho.
+- Si no existen enlaces reales de descarga, el botón permanece desactivado; **no hay APK incluido en el ZIP**.
+
+## Archivos
+
+- `index.html`: portada y notas de la actualización 6.0.
+- `styles.css`: presentación visual y diseño móvil.
+- `script.js`: menú, ampliación de imágenes y consulta de GitHub Releases.
+- `config.js`: repo de APK, versión y capturas opcionales.
+- `assets/vestra-campana-principal.webp`: imagen principal.
+- `assets/vestra-campana-azul.webp`: promocional azul.
+- `assets/vestra-campana-moda.webp`: collage histórico, contiene texto 5.0.1 de la campaña anterior.
+- `assets/icono-vestra.png`: icono de la web.
+
+Los botones que están **dibujados dentro de las imágenes** son parte de las ilustraciones; el botón funcional para descargar está en el apartado **Descargar**.
